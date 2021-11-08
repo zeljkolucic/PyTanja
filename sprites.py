@@ -178,21 +178,60 @@ class Aki(Agent):
             if node.row == goal[0] and node.col == goal[1]:
                 return partial_path
 
-            children_nodes = []
+            children_nodes = dict()
+            different_costs = []
             if node.row - 1 >= 0:
-                children_nodes.append(game_map[node.row - 1][node.col])
+                child_node = game_map[node.row - 1][node.col]
+                children_nodes['n'] = child_node
+                if not child_node.cost() in different_costs:
+                    different_costs.append(child_node.cost())
             if node.row + 1 < len(game_map):
-                children_nodes.append(game_map[node.row + 1][node.col])
+                child_node = game_map[node.row + 1][node.col]
+                children_nodes['s'] = child_node
+                if not child_node.cost() in different_costs:
+                    different_costs.append(child_node.cost())
             if node.col - 1 >= 0:
-                children_nodes.append(game_map[node.row][node.col - 1])
+                child_node = game_map[node.row][node.col - 1]
+                children_nodes['w'] = child_node
+                if not child_node.cost() in different_costs:
+                    different_costs.append(child_node.cost())
             if node.col + 1 < len(game_map[0]):
-                children_nodes.append(game_map[node.row][node.col + 1])
-            children_nodes.sort(key=lambda elem: -elem.cost())
+                child_node = game_map[node.row][node.col + 1]
+                children_nodes['e'] = child_node
+                if not child_node.cost() in different_costs:
+                    different_costs.append(child_node.cost())
 
-            for child in children_nodes:
+            # sortira se u opadajucem poretku zato sto se kasnije umecu elementi na pocetak liste, tako da ce posljednji
+            # umetnut biti prvi pop-ovan sa stack-a i upravo on treba da ima najmanju cijenu
+            different_costs.sort(key=lambda elem: -elem)
+
+            sorted_children_nodes = []
+            for cost in different_costs:
+                if 'w' in children_nodes:
+                    west_node = children_nodes.get('w')
+                    if west_node.cost() == cost:
+                        sorted_children_nodes.append(west_node)
+
+                if 's' in children_nodes:
+                    south_node = children_nodes.get('s')
+                    if south_node.cost() == cost:
+                        sorted_children_nodes.append(south_node)
+
+                if 'e' in children_nodes:
+                    east_node = children_nodes.get('e')
+                    if east_node.cost() == cost:
+                        sorted_children_nodes.append(east_node)
+
+                if 'n' in children_nodes:
+                    north_node = children_nodes.get('n')
+                    if north_node.cost() == cost:
+                        sorted_children_nodes.append(north_node)
+
+            for child in sorted_children_nodes:
                 if child not in partial_path:
                     new_partial_path = partial_path + [child]
                     stack.insert(0, new_partial_path)
+
 
 class Jocke(Agent):
     def __init__(self, row, col, file_name):
@@ -207,7 +246,8 @@ class Jocke(Agent):
             if node.row == goal[0] and node.col == goal[1]:
                 return partial_path
 
-            children_nodes = []
+            children_nodes = dict()
+            different_costs = []
 
             # provjera da li ima komsiju na sjeveru
             if node.row - 1 >= 0:
@@ -237,7 +277,9 @@ class Jocke(Agent):
 
                 average_cost = collective_cost / number_of_neighbors
                 north_node_with_cost = [north_node, average_cost]
-                children_nodes.append(north_node_with_cost)
+                children_nodes['n'] = north_node_with_cost
+                if average_cost not in different_costs:
+                    different_costs.append(average_cost)
 
             # --------------------------------------------------
 
@@ -269,7 +311,9 @@ class Jocke(Agent):
 
                 average_cost = collective_cost / number_of_neighbors
                 south_node_with_cost = [south_node, average_cost]
-                children_nodes.append(south_node_with_cost)
+                children_nodes['s'] = south_node_with_cost
+                if average_cost not in different_costs:
+                    different_costs.append(average_cost)
 
             # --------------------------------------------------
 
@@ -301,7 +345,9 @@ class Jocke(Agent):
 
                 average_cost = collective_cost / number_of_neighbors
                 west_node_with_cost = [west_node, average_cost]
-                children_nodes.append(west_node_with_cost)
+                children_nodes['w'] = west_node_with_cost
+                if average_cost not in different_costs:
+                    different_costs.append(average_cost)
 
             # --------------------------------------------------
 
@@ -333,10 +379,35 @@ class Jocke(Agent):
 
                 average_cost = collective_cost / number_of_neighbors
                 east_node_with_cost = [east_node, average_cost]
-                children_nodes.append(east_node_with_cost)
+                children_nodes['e'] = east_node_with_cost
+                if average_cost not in different_costs:
+                    different_costs.append(average_cost)
 
-            children_nodes.sort(key=lambda elem: elem[1])
-            for child in children_nodes:
+            different_costs.sort(key=lambda elem: elem)
+
+            sorted_children_nodes = []
+            for cost in different_costs:
+                if 'n' in children_nodes:
+                    north_node = children_nodes.get('n')
+                    if north_node[1] == cost:
+                        sorted_children_nodes.append(north_node)
+
+                if 'e' in children_nodes:
+                    east_node = children_nodes.get('e')
+                    if east_node[1] == cost:
+                        sorted_children_nodes.append(east_node)
+
+                if 's' in children_nodes:
+                    south_node = children_nodes.get('s')
+                    if south_node[1] == cost:
+                        sorted_children_nodes.append(south_node)
+
+                if 'w' in children_nodes:
+                    west_node = children_nodes.get('w')
+                    if west_node[1] == cost:
+                        sorted_children_nodes.append(west_node)
+
+            for child in sorted_children_nodes:
                 child_node = child[0]
                 if child_node not in partial_path:
                     new_partial_path = partial_path + [child_node]
@@ -346,3 +417,106 @@ class Jocke(Agent):
 class Draza(Agent):
     def __init__(self, row, col, file_name):
         super().__init__(row, col, file_name)
+
+    def get_agent_path(self, game_map, goal):
+        start_node = game_map[self.row][self.col]
+        stack = [[[start_node], start_node.cost()]]
+
+        while stack:
+            partial_path_with_cost = stack.pop(0)
+            partial_path_cost = partial_path_with_cost[1]
+            partial_path = partial_path_with_cost[0]
+            node = partial_path[-1]
+            if node.row == goal[0] and node.col == goal[1]:
+                return partial_path
+
+            children_nodes = []
+            if node.row - 1 >= 0:
+                child_node = game_map[node.row - 1][node.col]
+                child_node_with_cost = [child_node, child_node.cost()]
+                children_nodes.append(child_node_with_cost)
+            if node.row + 1 < len(game_map):
+                child_node = game_map[node.row + 1][node.col]
+                child_node_with_cost = [child_node, child_node.cost()]
+                children_nodes.append(child_node_with_cost)
+            if node.col - 1 >= 0:
+                child_node = game_map[node.row][node.col - 1]
+                child_node_with_cost = [child_node, child_node.cost()]
+                children_nodes.append(child_node_with_cost)
+            if node.col + 1 < len(game_map[0]):
+                child_node = game_map[node.row][node.col + 1]
+                child_node_with_cost = [child_node, child_node.cost()]
+                children_nodes.append(child_node_with_cost)
+
+            for child_node_with_cost in children_nodes:
+                child_node = child_node_with_cost[0]
+                if child_node not in partial_path:
+                    new_partial_path = partial_path + [child_node]
+                    new_partial_path_cost = partial_path_cost + child_node_with_cost[1]
+                    new_partial_path_with_cost = [new_partial_path, new_partial_path_cost]
+                    stack.insert(0, new_partial_path_with_cost)
+
+            stack.sort(key=lambda elem: elem[1])
+            minimum_cost = stack[0][1]
+            paths_with_minimum_cost = []
+            for path in stack:
+                if path[1] == minimum_cost:
+                    paths_with_minimum_cost.append(stack.pop(0))
+                else:
+                    break
+            paths_with_minimum_cost.sort(key=lambda elem: len(elem[0]))
+            stack = paths_with_minimum_cost + stack
+
+
+class Bole(Agent):
+    def __init__(self, row, col, file_name):
+        super().__init__(row, col, file_name)
+
+    def get_agent_path(self, game_map, goal):
+        start_node = game_map[self.row][self.col]
+        stack = [[[start_node], start_node.cost()]]
+
+        while stack:
+            partial_path_with_cost = stack.pop(0)
+            partial_path_cost = partial_path_with_cost[1]
+            partial_path = partial_path_with_cost[0]
+            node = partial_path[-1]
+            if node.row == goal[0] and node.col == goal[1]:
+                return partial_path
+
+            children_nodes = []
+            if node.row - 1 >= 0:
+                child_node = game_map[node.row - 1][node.col]
+                child_node_with_cost = [child_node, child_node.cost()]
+                children_nodes.append(child_node_with_cost)
+            if node.row + 1 < len(game_map):
+                child_node = game_map[node.row + 1][node.col]
+                child_node_with_cost = [child_node, child_node.cost()]
+                children_nodes.append(child_node_with_cost)
+            if node.col - 1 >= 0:
+                child_node = game_map[node.row][node.col - 1]
+                child_node_with_cost = [child_node, child_node.cost()]
+                children_nodes.append(child_node_with_cost)
+            if node.col + 1 < len(game_map[0]):
+                child_node = game_map[node.row][node.col + 1]
+                child_node_with_cost = [child_node, child_node.cost()]
+                children_nodes.append(child_node_with_cost)
+
+            for child_node_with_cost in children_nodes:
+                child_node = child_node_with_cost[0]
+                if child_node not in partial_path:
+                    new_partial_path = partial_path + [child_node]
+                    new_partial_path_cost = partial_path_cost + child_node_with_cost[1]
+                    new_partial_path_with_cost = [new_partial_path, new_partial_path_cost]
+                    stack.insert(0, new_partial_path_with_cost)
+
+            stack.sort(key=lambda elem: elem[1])
+            minimum_cost = stack[0][1]
+            paths_with_minimum_cost = []
+            for path in stack:
+                if path[1] == minimum_cost:
+                    paths_with_minimum_cost.append(stack.pop(0))
+                else:
+                    break
+            paths_with_minimum_cost.sort(key=lambda elem: len(elem[0]))
+            stack = paths_with_minimum_cost + stack
