@@ -1,6 +1,7 @@
 import pygame
 import os
 import config
+import math
 
 
 class BaseSprite(pygame.sprite.Sprite):
@@ -487,19 +488,27 @@ class Bole(Agent):
             children_nodes = []
             if node.row - 1 >= 0:
                 child_node = game_map[node.row - 1][node.col]
-                child_node_with_cost = [child_node, child_node.cost()]
+                heuristic_cost = math.sqrt(math.pow(goal[0] - child_node.row, 2) + math.pow(goal[1] - child_node.col, 2))
+                cost = child_node.cost() + heuristic_cost
+                child_node_with_cost = [child_node, cost]
                 children_nodes.append(child_node_with_cost)
             if node.row + 1 < len(game_map):
                 child_node = game_map[node.row + 1][node.col]
-                child_node_with_cost = [child_node, child_node.cost()]
+                heuristic_cost = math.sqrt(math.pow(goal[0] - child_node.row, 2) + math.pow(goal[1] - child_node.col, 2))
+                cost = child_node.cost() + heuristic_cost
+                child_node_with_cost = [child_node, cost]
                 children_nodes.append(child_node_with_cost)
             if node.col - 1 >= 0:
                 child_node = game_map[node.row][node.col - 1]
-                child_node_with_cost = [child_node, child_node.cost()]
+                heuristic_cost = math.sqrt(math.pow(goal[0] - child_node.row, 2) + math.pow(goal[1] - child_node.col, 2))
+                cost = child_node.cost() + heuristic_cost
+                child_node_with_cost = [child_node, cost]
                 children_nodes.append(child_node_with_cost)
             if node.col + 1 < len(game_map[0]):
                 child_node = game_map[node.row][node.col + 1]
-                child_node_with_cost = [child_node, child_node.cost()]
+                heuristic_cost = math.sqrt(math.pow(goal[0] - child_node.row, 2) + math.pow(goal[1] - child_node.col, 2))
+                cost = child_node.cost() + heuristic_cost
+                child_node_with_cost = [child_node, cost]
                 children_nodes.append(child_node_with_cost)
 
             for child_node_with_cost in children_nodes:
