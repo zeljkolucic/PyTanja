@@ -202,8 +202,6 @@ class Aki(Agent):
                 if not child_node.cost() in different_costs:
                     different_costs.append(child_node.cost())
 
-            # sortira se u opadajucem poretku zato sto se kasnije umecu elementi na pocetak liste, tako da ce posljednji
-            # umetnut biti prvi pop-ovan sa stack-a i upravo on treba da ima najmanju cijenu
             different_costs.sort(key=lambda elem: -elem)
 
             sorted_children_nodes = []
@@ -250,7 +248,6 @@ class Jocke(Agent):
             children_nodes = dict()
             different_costs = []
 
-            # provjera da li ima komsiju na sjeveru
             if node.row - 1 >= 0:
                 row = node.row - 1
                 col = node.col
@@ -258,19 +255,16 @@ class Jocke(Agent):
                 number_of_neighbors = 0
                 collective_cost = 0.0
 
-                # provjera da li sjeverni komsija ima svog komsiju na sjeveru
                 if row - 1 >= 0:
                     number_of_neighbors += 1
                     neighbor_node = game_map[row - 1][col]
                     collective_cost += neighbor_node.cost()
 
-                # provjera da li sjeverni komsija ima svog komsiju na zapadu
                 if col - 1 >= 0:
                     number_of_neighbors += 1
                     neighbor_node = game_map[row][col - 1]
                     collective_cost += neighbor_node.cost()
 
-                # provjera da li sjeverni komsija ima svog komsiju na istoku
                 if col + 1 < len(game_map[0]):
                     number_of_neighbors += 1
                     neighbor_node = game_map[row][col + 1]
@@ -282,9 +276,6 @@ class Jocke(Agent):
                 if average_cost not in different_costs:
                     different_costs.append(average_cost)
 
-            # --------------------------------------------------
-
-            # provjera da li ima komsiju na jugu
             if node.row + 1 < len(game_map):
                 row = node.row + 1
                 col = node.col
@@ -292,19 +283,16 @@ class Jocke(Agent):
                 number_of_neighbors = 0
                 collective_cost = 0.0
 
-                # provjera da li juzni komsija ima svog komsiju na jugu
                 if row + 1 < len(game_map):
                     number_of_neighbors += 1
                     neighbor_node = game_map[row + 1][col]
                     collective_cost += neighbor_node.cost()
 
-                # provjera da li juzni komsija ima svog komsiju na zapadu
                 if col - 1 >= 0:
                     number_of_neighbors += 1
                     neighbor_node = game_map[row][col - 1]
                     collective_cost += neighbor_node.cost()
 
-                # provjera da li juzni komsija ima svog komsiju na istoku
                 if col + 1 < len(game_map[0]):
                     number_of_neighbors += 1
                     neighbor_node = game_map[row][col + 1]
@@ -316,9 +304,6 @@ class Jocke(Agent):
                 if average_cost not in different_costs:
                     different_costs.append(average_cost)
 
-            # --------------------------------------------------
-
-            # provjera da li ima komsiju na zapadu
             if node.col - 1 >= 0:
                 row = node.row
                 col = node.col - 1
@@ -326,19 +311,16 @@ class Jocke(Agent):
                 number_of_neighbors = 0
                 collective_cost = 0.0
 
-                # provjera da li zapadni komsija ima svog komsiju na jugu
                 if row + 1 < len(game_map):
                     number_of_neighbors += 1
                     neighbor_node = game_map[row + 1][col]
                     collective_cost += neighbor_node.cost()
 
-                # provjera da li zapadni komsija ima svog komsiju na sjeveru
                 if row - 1 >= 0:
                     number_of_neighbors += 1
                     neighbor_node = game_map[row - 1][col]
                     collective_cost += neighbor_node.cost()
 
-                # provjera da li zapadni komsija ima svog komsiju na zapadu
                 if col - 1 >= 0:
                     number_of_neighbors += 1
                     neighbor_node = game_map[row][col - 1]
@@ -350,9 +332,6 @@ class Jocke(Agent):
                 if average_cost not in different_costs:
                     different_costs.append(average_cost)
 
-            # --------------------------------------------------
-
-            # provjera da li ima komsiju na istoku
             if node.col + 1 < len(game_map[0]):
                 row = node.row
                 col = node.col + 1
@@ -360,19 +339,16 @@ class Jocke(Agent):
                 number_of_neighbors = 0
                 collective_cost = 0.0
 
-                # provjera da li istocni komsija ima svog komsiju na jugu
                 if row + 1 < len(game_map):
                     number_of_neighbors += 1
                     neighbor_node = game_map[row + 1][col]
                     collective_cost += neighbor_node.cost()
 
-                # provjera da li istocni komsija ima svog komsiju na sjeveru
                 if row - 1 >= 0:
                     number_of_neighbors += 1
                     neighbor_node = game_map[row - 1][col]
                     collective_cost += neighbor_node.cost()
 
-                # provjera da li istocni komsija ima svog komsiju na istoku
                 if col + 1 < len(game_map[0]):
                     number_of_neighbors += 1
                     neighbor_node = game_map[row][col + 1]
