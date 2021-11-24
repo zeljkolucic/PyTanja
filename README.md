@@ -1,5 +1,5 @@
 # PyTanja
-PyTanja is a graphic simulation of searching algorithms written in Python programming language. The main application window contains two-dimensional map which consists of different kinds of field and an agent who is moving through the map using a beforehand defined searching algorithm. The final cost of the path depends on the cost of different kinds of field. The goal is to lead the agent from start to finish.
+PyTanja is a graphic simulation of searching algorithms written in Python programming language. The main application window contains two-dimensional map which consists of different kinds of fields and an agent who is moving through the map using a beforehand defined searching algorithm. The final cost of the path depends on the cost of different kinds of fields. The goal is to lead the agent from start to finish.
 
 ## Running the application
 The program is run from terminal using command:
@@ -20,30 +20,30 @@ terminates the app and closes the main application window.
 
 ## Agents
 
-*Aki* - Agent uses the depth first searching strategy and 
-he gives the advantage to the fields with lower cost, and in
-case of two or more field with the same cost, he chooses 
+*Aki* - Agent uses the depth first searching strategy and
+gives the advantage to the fields with lower cost, and in
+case of two or more fields with the same cost, he chooses 
 the field on the certain side of the world (north, east,
 south, west).
 
-![Aki](https://raw.githubusercontent.com/zeljkolucic/PyTanja/main/screenshots/Aki.jpg?token=AQ4YT4QLRFEEPEUCZCEN6EDBR56C2)
+![Aki](screenshots/Aki.jpg)
 
-*Jocke* - Agent uses th breadth first searching strategy and
-he gives the advantage to the fields with lower cost of 
-his neighbors collectively, and in case of two or more field
+*Jocke* - Agent uses the breadth first searching strategy and
+gives the advantage to the fields with lower cost of 
+his neighbors collectively, and in case of two or more fields
 with the same collective cost, he chooses the field
 on the certain side of the world (north, east, south, west).
 
-![Jocke](https://raw.githubusercontent.com/zeljkolucic/PyTanja/main/screenshots/Jocke.jpg?token=AQ4YT4XLXPRZAGYU6HDHSETBR56F4)
+![Jocke](screenshots/Jocke.jpg)
 
 *Draza* - Agent uses branch and bound searching strategy,
 and in case of two paths with the same cost, he chooses the
-one with less field in the path, that is any of them in case of 
+one with less fields in the path, that is any of them in case of 
 two or more paths with same number of fields.
 
-![Draza](https://raw.githubusercontent.com/zeljkolucic/PyTanja/main/screenshots/Draza.jpg?token=AQ4YT4SZL7WTGGPPOB42UXDBR56HS)
+![Draza](screenshots/Draza.jpg)
 
 *Bole* - Agent uses A* searching strategy, with heuristic which 
 simulates the air distance.
 
-![Bole](https://raw.githubusercontent.com/zeljkolucic/PyTanja/main/screenshots/Bole.jpg?token=AQ4YT4RAZADVJPEADJJLK3LBR56IU)
+![Bole](screenshots/Bole.jpg)
